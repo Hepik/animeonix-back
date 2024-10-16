@@ -1,2 +1,4 @@
 fastapi[standard]==0.114.1
 pydantic==1.9.2
+sqlalchemy==1.4.40
+alembic==1.13.3
