@@ -1,4 +1,4 @@
-from config.database import Base, engine
+from config.database import engine
 from models.title import Title
 from models.review import Review
 

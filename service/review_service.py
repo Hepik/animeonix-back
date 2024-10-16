@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Query
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from schemas.review_schema import *
 from repository.review_repository import ReviewRepository
