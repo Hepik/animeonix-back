@@ -1,10 +1,13 @@
 import models.title
 import schemas.title_schema
-
+from typing import Annotated
+from fastapi import Depends
 from sqlalchemy.orm import Session
+from config.database import get_db
+
 
 class TitleRepository:
-    def __init__(self, session: Session):
+    def __init__(self, session: Annotated[Session, Depends(get_db)]):
         self.db = session
 
     def get_titles(self, skip: int = 0, limit: int = 10):

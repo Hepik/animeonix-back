@@ -1,12 +1,12 @@
-from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from fastapi import HTTPException, Depends
+from typing import Annotated
 from schemas.title_schema import *
 from repository.title_repository import TitleRepository
 
 
 class TitleService:
-    def __init__(self, session: Session):
-        self.repository = TitleRepository(session)
+    def __init__(self, repository: Annotated[TitleRepository, Depends()]):
+        self.repository = repository
 
     def get_titles(self, page: int, limit: int):
         skip = (page - 1) * limit
