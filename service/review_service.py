@@ -1,12 +1,12 @@
-from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from fastapi import HTTPException, Depends
 from schemas.review_schema import *
 from repository.review_repository import ReviewRepository
+from typing import Annotated
 
 
 class ReviewService:
-    def __init__(self, session: Session):
-        self.repository = ReviewRepository(session)
+    def __init__(self, repository: Annotated[ReviewRepository, Depends()]):
+        self.repository = repository
     
     def get_reviews(self, page: int, limit: int):
         skip = (page - 1) * limit
