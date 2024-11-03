@@ -16,7 +16,7 @@ class Review(ReviewBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class ReviewResponse(BaseModel):
     reviews: List[Review]
@@ -25,7 +25,7 @@ class ReviewResponse(BaseModel):
     limit: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class DeleteResponse(BaseModel):
     detail: str

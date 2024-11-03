@@ -47,8 +47,8 @@ class TitleRepository:
         self.db.refresh(db_title)
         return db_title
 
-    def update_title(self, title_id: int, title_data: schemas.title_schema.TitleCreate):
-        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == title_id).first()
+    def update_title(self, id: int, title_data: schemas.title_schema.TitleCreate):
+        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
         if not db_title:
             return None
         
@@ -66,8 +66,8 @@ class TitleRepository:
         return db_title
 
 
-    def partial_update_title(self, title_id: int, title_data: schemas.title_schema.TitleUpdate):
-        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == title_id).first()
+    def partial_update_title(self, id: int, title_data: schemas.title_schema.TitleUpdate):
+        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
         if not db_title:
             return None
 
@@ -78,8 +78,8 @@ class TitleRepository:
         self.db.refresh(db_title)
         return db_title
 
-    def delete_title(self, title_id: int):
-        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == title_id).first()
+    def delete_title(self, id: int):
+        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
         if db_title:
             self.db.delete(db_title)
             self.db.commit()
