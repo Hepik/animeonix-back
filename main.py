@@ -1,10 +1,11 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from utils.innit_db import create_tables
 from dotenv import load_dotenv
 import os
-from controllers import title, review
+from controllers import title, review, auth, user
 
 create_tables()
 
@@ -24,3 +25,6 @@ app.add_middleware(
 
 app.include_router(title.router)
 app.include_router(review.router)
+app.include_router(auth.router)
+app.include_router(user.router)
+
