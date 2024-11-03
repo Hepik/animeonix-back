@@ -19,7 +19,7 @@ class Title(TitleBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TitleResponse(BaseModel):
     titles: List[Title]
@@ -28,7 +28,7 @@ class TitleResponse(BaseModel):
     limit: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TitleUpdate(BaseModel):
     name: Optional[str]
@@ -41,7 +41,7 @@ class TitleUpdate(BaseModel):
     slug: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class DeleteResponse(BaseModel):
     detail: str
