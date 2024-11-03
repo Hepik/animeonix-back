@@ -25,20 +25,20 @@ class ReviewRepository:
     def get_review_by_id(self, id: int):
         return self.db.query(models.review.Review).filter(models.review.Review.id == id).first()
 
-    def create_review(self, review: schemas.review_schema.ReviewCreate, title_id: int):
+    def create_review(self, review: schemas.review_schema.ReviewCreate):
         db_review = models.review.Review(
             content=review.content, 
             likes=0, 
             dislikes=0, 
-            title_id=title_id
+            title_id=review.title_id
         )
         self.db.add(db_review)
         self.db.commit()
         self.db.refresh(db_review)
         return db_review
 
-    def delete_review(self, review_id: int):
-        db_review = self.db.query(models.review.Review).filter(models.review.Review.id == review_id).first()
+    def delete_review(self, id: int):
+        db_review = self.db.query(models.review.Review).filter(models.review.Review.id == id).first()
         if db_review:
             self.db.delete(db_review)
             self.db.commit()
