@@ -2,6 +2,7 @@ from fastapi import Depends, Query, APIRouter
 from schemas.review_schema import *
 from service.review_service import ReviewService
 from typing import Annotated
+from utils.auth_utils import oauth2_bearer_user
 
 router = APIRouter(
     prefix="/reviews"
@@ -23,7 +24,7 @@ def get_review_by_id(id: int, service: Annotated[ReviewService, Depends()]):
 
 
 @router.post("/{title_id}", response_model=Review)
-def create_review(
+def create_review(_: Annotated[str, Depends(oauth2_bearer_user)], 
     title_id: int, 
     review: ReviewCreate, 
     service: Annotated[ReviewService, Depends()]
@@ -32,6 +33,6 @@ def create_review(
 
 
 @router.delete("/{review_id}", response_model=DeleteResponse)
-def delete_review(review_id: int, service: Annotated[ReviewService, Depends()]):
+def delete_review(_: Annotated[str, Depends(oauth2_bearer_user)], review_id: int, service: Annotated[ReviewService, Depends()]):
     service.delete_review(review_id=review_id)
     return {"detail": "Review deleted successfully"}
