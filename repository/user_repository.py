@@ -17,11 +17,12 @@ class UserRepository:
     def get_users_count(self):
         return self.db.query(models.user.Users).count()
 
-    def create_user(self, user_data: schemas.user_schema.CreateUserRequest):
+    def create_user(self, user_data: dict):
         create_user_model = models.user.Users(
-            username=user_data.username,
-            hashed_password = user_data.password,
-            role=user_data.role,
+            username=user_data.get("username"),
+            email=user_data.get("email"),
+            hashed_password = user_data.get("hashed_password"),
+            role=user_data.get("role"),
         )
 
         self.db.add(create_user_model)

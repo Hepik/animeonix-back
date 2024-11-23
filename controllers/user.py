@@ -20,6 +20,9 @@ def user(user: Annotated[dict, Depends(UserService.get_current_user)]):
     if user is None:
         raise HTTPException(status_code=401, detail='Authentication failed')
     return {"User": user}
+@router.post("/register", status_code=status.HTTP_200_OK)
+def register_user(register_user_request: RegisterUserRequest, service: Annotated[UserService, Depends()]):
+    service.register_user(register_user_request)
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_user(_: Annotated[str, Depends(oauth2_bearer_admin)], create_user_request: CreateUserRequest, service: Annotated[UserService, Depends()]):

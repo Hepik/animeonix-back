@@ -25,11 +25,15 @@ class UserService:
             "total": total
         }
 
-    def create_user(self, user_data: CreateUserRequest):
-        bytes = user_data.password.encode('utf-8')
-        salt = bcrypt.gensalt() 
-        hash = bcrypt.hashpw(bytes, salt)
-        user_data.password = hash
+    def register_user(self, user_schema: RegisterUserRequest):
+        user_data = user_schema.model_dump(exclude_unset=True)
+        user_data["hashed_password"] = UserService.get_password_hash(user_data["password"])
+        user_data["isActive"] = False
+        self.repository.create_user(user_data)
+
+    def create_user(self, user_schema: CreateUserRequest):
+        user_data = user_schema.model_dump(exclude_unset=True)
+        user_data["hashed_password"] = UserService.get_password_hash(user_data["password"])
         self.repository.create_user(user_data)
 
     def authenticate_user(self, username: str, password: str):
