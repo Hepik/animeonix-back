@@ -17,16 +17,18 @@ class UserService:
     def __init__(self, repository: Annotated[UserRepository, Depends()]):
         self.repository = repository
 
-    def get_users(self):
-        users = self.repository.get_users()
-        total = self.repository.get_users_count()
+    def get_users(self, username: str):
+        if username:
+            user = self.repository.get_user_by_username(username=username)
+            users = [user]
+            total = 1
+        else:
+            users = self.repository.get_users()
+            total = self.repository.get_users_count()
         return {
             "users": users,
             "total": total
         }
-    
-    def get_user_by_username(self, username: str):
-        return self.repository.get_user_by_username(username=username)
 
     def register_user(self, user_schema: RegisterUserRequest):
         user_data = user_schema.model_dump(exclude_unset=True)
