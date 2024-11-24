@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, Query, APIRouter
 from typing import Annotated
 from schemas.title_schema import *
 from service.title_service import TitleService
+from utils.auth_utils import oauth2_bearer_admin
 
 
 router = APIRouter(
@@ -23,21 +24,21 @@ def get_title_by_slug(slug: str, service: Annotated[TitleService, Depends()]):
 
 
 @router.post("", response_model=Title)
-def create_title(title: TitleCreate, service: Annotated[TitleService, Depends()]):
+def create_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title: TitleCreate, service: Annotated[TitleService, Depends()]):
     return service.create_title(title=title)
 
 
 @router.put("/{id}", response_model=Title)
-def update_title(id: int, title: TitleCreate, service: Annotated[TitleService, Depends()]):
+def update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, title: TitleCreate, service: Annotated[TitleService, Depends()]):
     return service.update_title(id=id, title=title)
 
 
 @router.patch("/{id}", response_model=Title)
-def partial_update_title(id: int, title: TitleUpdate, service: Annotated[TitleService, Depends()]):
+def partial_update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, title: TitleUpdate, service: Annotated[TitleService, Depends()]):
     return service.partial_update_title(id=id, title=title)
 
 
 @router.delete("/{id}", response_model=DeleteResponse)
-def delete_title(id: int, service: Annotated[TitleService, Depends()]):
+def delete_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, service: Annotated[TitleService, Depends()]):
     service.delete_title(id=id)
     return {"detail": "Title deleted successfully"}
