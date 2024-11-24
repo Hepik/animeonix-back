@@ -12,15 +12,12 @@ router = APIRouter(
 
 
 @router.get("", response_model=UsersResponse)
-def get_users(_: Annotated[str, Depends(oauth2_bearer_admin)], service: Annotated[UserService, Depends()]):
-    return service.get_users()
-
-@router.get("/get/{username}", response_model=Response)
-def get_user_by_username(username: str, service: Annotated[UserService, Depends()]):
-    user = service.get_user_by_username(username=username)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+def get_users(
+        _: Annotated[str, Depends(oauth2_bearer_user)], 
+        service: Annotated[UserService, Depends()], 
+        username: str = Query('')
+    ):
+    return service.get_users(username)
 
 @router.get("/current", status_code=status.HTTP_200_OK, response_model=Response)
 def get_current_user(current_user: Annotated[str, Depends(oauth2_bearer_user)]):
