@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, MetaData, Enum
+from sqlalchemy import Column, Integer, String, MetaData, Enum, Boolean
 import enum
 
 from config.database import Base
@@ -14,5 +14,8 @@ class Users(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String)
+    email = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
     role = Column(Enum(RoleEnum), nullable=False, default=RoleEnum.user)
+    isActive = Column(Boolean, nullable=False, default=False)
+    avatar = Column(String, default="user.jpg")

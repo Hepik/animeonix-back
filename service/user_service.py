@@ -24,6 +24,9 @@ class UserService:
             "users": users,
             "total": total
         }
+    
+    def get_user_by_username(self, username: str):
+        return self.repository.get_user_by_username(username=username)
 
     def register_user(self, user_schema: RegisterUserRequest):
         user_data = user_schema.model_dump(exclude_unset=True)
@@ -37,16 +40,20 @@ class UserService:
         self.repository.create_user(user_data)
 
     def authenticate_user(self, username: str, password: str):
-        user = self.repository.get_by_username(username)
+        user = self.repository.get_user_by_username(username)
         if not user:
             return False
-        if not bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+        if not bcrypt.checkpw(password.encode('utf-8'), user.hashed_password.encode('utf-8')):
             return False
         return user
 
-    def create_access_token(self, username: str, user_id: int, expires_delta: timedelta):
+    def create_access_token(self, user_id: int, role: str, expires_delta: timedelta):
         expires = datetime.now(timezone.utc) + expires_delta
-        encode = {'sub': username, 'id': user_id, 'exp': expires}
+        encode = {
+            'id': user_id,
+            'role': role.value,
+            'exp': expires,
+            }
         return jwt.encode(encode, SECRET_KEY, ALGORITHM)
 
     def get_current_user(self, token: str):
@@ -57,14 +64,38 @@ class UserService:
         id: int = payload.get('id')
         return self.repository.get_user_by_id(id)
 
+    def change_password(self, current_user, current_password: str, new_password: str):
+        if not bcrypt.checkpw(current_password.encode('utf-8'), current_user.hashed_password.encode('utf-8')):
+            raise HTTPException(status_code=400, detail="Incorrect current password")
+
+        current_user.hashed_password = UserService.get_password_hash(new_password)
+
+        self.repository.update_user(current_user)
+
+    
     def partial_update_user(self, id: int, user: UserUpdate):
-        db_title = self.repository.partial_update_user(id=id, user_data=user)
-        if db_title is None:
+        user_data = user.model_dump(exclude_unset=True)
+
+        if "password" in user_data:
+            user_data["hashed_password"] = UserService.get_password_hash(user.password)
+            del user_data["password"]
+        
+        db_user = self.repository.partial_update_user(id=id, user_data=user_data)
+        if db_user is None:
             raise HTTPException(status_code=404, detail="User not found")
-        return db_title
+        return db_user
 
     def delete_user(self, id: int):
         user_deleted = self.repository.delete_by_id(id=id)
         if not user_deleted:
             raise HTTPException(status_code=404, detail="User not found")
         return {"detail": "User deleted successfully"}
+
+    @staticmethod
+    def get_password_hash(password: str) -> str:
+        bytes = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(bytes, salt).decode()
+    
+    class UserServiceException(Exception):
+        pass

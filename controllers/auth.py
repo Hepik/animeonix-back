@@ -17,6 +17,6 @@ def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depen
     user = service.authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user.')
-    token = service.create_access_token(user.username, user.id, timedelta(hours=10))
+    token = service.create_access_token(user.id, user.role, timedelta(hours=1))
 
     return {'access_token': token, 'token_type': 'bearer'}
