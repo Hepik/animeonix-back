@@ -28,17 +28,17 @@ def create_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title: TitleCr
     return service.create_title(title=title)
 
 
-@router.put("/{title_id}", response_model=Title)
-def update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title_id: int, title: TitleCreate, service: Annotated[TitleService, Depends()]):
-    return service.update_title(title_id=title_id, title=title)
+@router.put("/{id}", response_model=Title)
+def update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, title: TitleCreate, service: Annotated[TitleService, Depends()]):
+    return service.update_title(id=id, title=title)
 
 
-@router.patch("/{title_id}", response_model=Title)
-def partial_update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title_id: int, title: TitleUpdate, service: Annotated[TitleService, Depends()]):
-    return service.partial_update_title(title_id=title_id, title=title)
+@router.patch("/{id}", response_model=Title)
+def partial_update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, title: TitleUpdate, service: Annotated[TitleService, Depends()]):
+    return service.partial_update_title(id=id, title=title)
 
 
-@router.delete("/{title_id}", response_model=DeleteResponse)
-def delete_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title_id: int, service: Annotated[TitleService, Depends()]):
-    service.delete_title(title_id=title_id)
+@router.delete("/{id}", response_model=DeleteResponse)
+def delete_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, service: Annotated[TitleService, Depends()]):
+    service.delete_title(id=id)
     return {"detail": "Title deleted successfully"}

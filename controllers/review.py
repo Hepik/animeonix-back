@@ -8,31 +8,30 @@ router = APIRouter(
     prefix="/reviews"
 )
 
+
 @router.get("", response_model=ReviewResponse)
-def get_reviews(service: Annotated[ReviewService, Depends()], page: int = Query(1), limit: int = Query(10)):
-    return service.get_reviews(page=page, limit=limit)
+def get_reviews(service: Annotated[ReviewService, Depends()],
+                         title_id: int = Query(None),
+                         page: int = Query(1),
+                         limit: int = Query(10)):
+    return service.get_reviews(page=page, limit=limit, title_id=title_id)
 
 
-@router.get("/{title_id}", response_model=ReviewResponse)
-def get_reviews_by_title(service: Annotated[ReviewService, Depends()], title_id: int, page: int = Query(1), limit: int = Query(10)):
-    return service.get_reviews_by_title(page=page, limit=limit, title_id=title_id)
-
-
-@router.get("/review_id/{id}", response_model=Review)
+@router.get("/{id}", response_model=Review)
 def get_review_by_id(id: int, service: Annotated[ReviewService, Depends()]):
     return service.get_review_by_id(id=id)
 
 
-@router.post("/{title_id}", response_model=Review)
-def create_review(_: Annotated[str, Depends(oauth2_bearer_user)], 
-    title_id: int, 
+@router.post("", response_model=Review)
+def create_review(
+    _: Annotated[str, Depends(oauth2_bearer_user)], 
     review: ReviewCreate, 
     service: Annotated[ReviewService, Depends()]
 ):
-    return service.create_review(title_id=title_id, review=review)
+    return service.create_review(review=review)
 
 
-@router.delete("/{review_id}", response_model=DeleteResponse)
-def delete_review(_: Annotated[str, Depends(oauth2_bearer_user)], review_id: int, service: Annotated[ReviewService, Depends()]):
-    service.delete_review(review_id=review_id)
+@router.delete("/{id}", response_model=DeleteResponse)
+def delete_review(_: Annotated[str, Depends(oauth2_bearer_user)], id: int, service: Annotated[ReviewService, Depends()]):
+    service.delete_review(id=id)
     return {"detail": "Review deleted successfully"}

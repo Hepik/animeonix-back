@@ -31,22 +31,22 @@ class TitleService:
         return db_title
 
 
-    def update_title(self, title_id: int, title: TitleCreate):
-        db_title = self.repository.update_title(title_id=title_id, title_data=title)
+    def update_title(self, id: int, title: TitleCreate):
+        db_title = self.repository.update_title(id=id, title_data=title)
         if db_title is None:
             raise HTTPException(status_code=404, detail="Title not found")
         return db_title
 
 
-    def partial_update_title(self, title_id: int, title: TitleUpdate):
-        db_title = self.repository.partial_update_title(title_id=title_id, title_data=title)
+    def partial_update_title(self, id: int, title: TitleUpdate):
+        db_title = self.repository.partial_update_title(id=id, title_data=title)
         if db_title is None:
             raise HTTPException(status_code=404, detail="Title not found")
         return db_title
 
 
-    def delete_title(self, title_id: int):
-        title_deleted = self.repository.delete_title(title_id=title_id)
+    def delete_title(self, id: int):
+        title_deleted = self.repository.delete_title(id=id)
         if not title_deleted:
             raise HTTPException(status_code=404, detail="Title not found")
         return {"detail": "Title deleted successfully"}
