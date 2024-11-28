@@ -32,7 +32,7 @@ def create_user(_: Annotated[str, Depends(oauth2_bearer_admin)], create_user_req
     service.create_user(create_user_request)
 
 @router.patch("/{id}", response_model=Response)
-def partial_update_user(_: Annotated[str, Depends(oauth2_bearer_user)], id: int, user: UserUpdate, service: Annotated[UserService, Depends()]):
+def partial_update_user(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, user: UserUpdate, service: Annotated[UserService, Depends()]):
     return service.partial_update_user(id=id, user=user)
 
 @router.patch("/change/password", status_code=status.HTTP_200_OK)

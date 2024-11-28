@@ -8,7 +8,7 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 def oauth2_bearer_admin(token: Annotated[str, Depends(oauth2_bearer)], service: Annotated[UserService, Depends()]):
     user = service.get_current_user(token)
-    if not user or user.role != 'admin':
+    if not user or user.role.value != 'admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied. Admin role required.")
     
     return user
