@@ -9,12 +9,24 @@ class UserRepository:
     def __init__(self, session: Annotated[Session, Depends(get_db)]):
         self.db = session
 
-    def get_users(self):
-        return self.db.query(models.user.Users).all()
+    def get_users(self, skip: int = 0, limit: int = 10):
+        return self.db.query(models.user.Users).offset(skip).limit(limit).all()
     
 
     def get_users_count(self):
         return self.db.query(models.user.Users).count()
+    
+    def filter_users_by_username(self, username: str, skip: int = 0, limit: int = 10):
+        return (
+            self.db.query(models.user.Users)
+            .filter(models.user.Users.username.ilike(f"%{username}%"))
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
+    def get_filtered_count(self, username: str) -> int:
+        return self.db.query(models.user.Users).filter(models.user.Users.username.ilike(f"%{username}%")).count()
     
     def get_user_by_username(self, username: str):
         user = self.db.query(models.user.Users).filter(models.user.Users.username == username).first()

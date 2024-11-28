@@ -14,10 +14,12 @@ router = APIRouter(
 @router.get("", response_model=UsersResponse)
 def get_users(
         _: Annotated[str, Depends(oauth2_bearer_user)], 
-        service: Annotated[UserService, Depends()], 
+        service: Annotated[UserService, Depends()],
+        page: int = Query(1), 
+        limit: int = Query(10),
         username: str = Query('')
     ):
-    return service.get_users(username)
+    return service.get_users(page, limit, username)
 
 @router.get("/current", status_code=status.HTTP_200_OK, response_model=Response)
 def get_current_user(current_user: Annotated[str, Depends(oauth2_bearer_user)]):

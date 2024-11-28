@@ -26,6 +26,9 @@ class Response(BaseModel):
 
 class UsersResponse(BaseModel):
     users: List[Response]
+    total: int
+    page: int
+    limit: int
 
     class Config:
         from_attributes = True
