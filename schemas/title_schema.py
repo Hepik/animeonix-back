@@ -35,14 +35,14 @@ class TitleResponse(BaseModel):
         from_attributes = True
 
 class TitleUpdate(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
-    trailer: Optional[str]
-    likes: Optional[int]
-    dislikes: Optional[int]
-    reviews: Optional[int]
-    image: Optional[str]
-    slug: Optional[str]
+    name: Optional[str] = None
+    description: Optional[str] = None
+    trailer: Optional[str] = None
+    likes: Optional[int] = None
+    dislikes: Optional[int] = None
+    reviews: Optional[int] = None
+    image: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
