@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, Query, APIRouter
 from typing import Annotated
+from starlette import status
 from schemas.title_schema import *
 from service.title_service import TitleService
 from utils.auth_utils import oauth2_bearer_admin
@@ -23,7 +24,7 @@ def get_title_by_slug(slug: str, service: Annotated[TitleService, Depends()]):
     return title
 
 
-@router.post("", response_model=Title)
+@router.post("", status_code=status.HTTP_201_CREATED)
 def create_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title: TitleCreate, service: Annotated[TitleService, Depends()]):
     return service.create_title(title=title)
 

@@ -12,8 +12,12 @@ class TitleBase(BaseModel):
     image: str
     slug: str
 
-class TitleCreate(TitleBase):
-    pass
+class TitleCreate(BaseModel):
+    name: str
+    description: str
+    trailer: str
+    image: str
+    slug: str
 
 class Title(TitleBase):
     id: int

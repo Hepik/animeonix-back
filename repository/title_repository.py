@@ -36,9 +36,6 @@ class TitleRepository:
             name=title.name,
             description=title.description,
             trailer=title.trailer,
-            likes=title.likes,
-            dislikes=title.dislikes,
-            reviews=title.reviews,
             image=title.image.split('/')[-1],
             slug=title.slug
         )
