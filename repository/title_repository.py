@@ -30,6 +30,22 @@ class TitleRepository:
 
     def get_title_count(self):
         return self.db.query(models.title.Title).count()
+    
+    def filter_titles_by_name(self, name: str, skip: int = 0, limit: int = 10):
+        return (
+            self.db.query(models.title.Title)
+            .filter(models.title.Title.name.ilike(f"%{name}%"))
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
+    def get_filtered_title_count(self, name: str) -> int:
+        return (
+            self.db.query(models.title.Title)
+            .filter(models.title.Title.name.ilike(f"%{name}%"))
+            .count()
+        )
 
     def create_title(self, title: schemas.title_schema.TitleCreate):
         db_title = models.title.Title(

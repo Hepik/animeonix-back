@@ -12,8 +12,8 @@ router = APIRouter(
 
 
 @router.get("", response_model=TitleResponse)
-def get_titles(service: Annotated[TitleService, Depends()], page: int = Query(1), limit: int = Query(10)):
-    return service.get_titles(page=page, limit=limit)
+def get_titles(service: Annotated[TitleService, Depends()], page: int = Query(1), limit: int = Query(10), name: str = Query('')):
+    return service.get_titles(page=page, limit=limit, name=name)
     
 
 @router.get("/{slug}", response_model=Title)
