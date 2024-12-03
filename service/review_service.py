@@ -34,9 +34,10 @@ class ReviewService:
 
     def create_review(
         self, 
-        review: ReviewCreate
+        review: ReviewCreate,
+        user_id: int
     ):
-        return self.repository.create_review(review=review)
+        return self.repository.create_review(review=review, user_id=user_id)
 
 
     def delete_review(self, id: int):

@@ -17,11 +17,15 @@ class UserService:
     def __init__(self, repository: Annotated[UserRepository, Depends()]):
         self.repository = repository
 
-    def get_users(self, page: int, limit: int, username: str):
+    def get_users(self, page: int, limit: int, username: str, id: int):
         skip = (page - 1) * limit
         if username:
             users = self.repository.filter_users_by_username(username=username, skip=skip, limit=limit)
             total = self.repository.get_filtered_count(username=username)
+        elif id:
+            user = self.repository.get_user_by_id(id)
+            users = [user]
+            total = 1
         else:
             users = self.repository.get_users(skip, limit)
             total = self.repository.get_users_count()

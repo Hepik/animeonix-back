@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, MetaData, Enum, Boolean
 import enum
+from sqlalchemy.orm import relationship
 
 from config.database import Base
 
@@ -19,3 +20,5 @@ class Users(Base):
     role = Column(Enum(RoleEnum), nullable=False, default=RoleEnum.user)
     isActive = Column(Boolean, nullable=False, default=False)
     avatar = Column(String, default="user.jpg")
+
+    reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")

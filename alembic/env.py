@@ -6,6 +6,7 @@ from models.title import *
 # from ..models import title
 # from ..models import review
 from models.review import *
+from models.user import *
 from config.database import Base
 from alembic import context
 
