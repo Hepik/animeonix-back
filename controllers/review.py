@@ -32,6 +32,6 @@ def create_review(
 
 
 @router.delete("/{id}", response_model=DeleteResponse)
-def delete_review(_: Annotated[str, Depends(oauth2_bearer_user)], id: int, service: Annotated[ReviewService, Depends()]):
-    service.delete_review(id=id)
+def delete_review(current_user: Annotated[str, Depends(oauth2_bearer_user)], id: int, service: Annotated[ReviewService, Depends()]):
+    service.delete_review(id=id, current_user=current_user)
     return {"detail": "Review deleted successfully"}

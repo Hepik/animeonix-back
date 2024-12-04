@@ -2,6 +2,7 @@ from fastapi import HTTPException, Depends
 from schemas.review_schema import *
 from repository.review_repository import ReviewRepository
 from typing import Annotated
+from starlette import status
 
 
 class ReviewService:
@@ -40,8 +41,13 @@ class ReviewService:
         return self.repository.create_review(review=review, user_id=user_id)
 
 
-    def delete_review(self, id: int):
-        review_deleted = self.repository.delete_review(id=id)
+    def delete_review(self, id: int, current_user: str):
+        review = self.repository.get_review_by_id(id=id)
+        if (review.user_id == current_user.id or current_user.role.value == 'admin'):
+            review_deleted = self.repository.delete_review(id=id)
+        else:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied. Admin role required.")
+        
         if not review_deleted:
             raise HTTPException(status_code=404, detail="Review not found")
         return {"detail": "Review deleted successfully"}
