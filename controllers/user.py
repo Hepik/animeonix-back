@@ -13,11 +13,13 @@ router = APIRouter(
 
 @router.get("", response_model=UsersResponse)
 def get_users(
-        _: Annotated[str, Depends(oauth2_bearer_user)], 
-        service: Annotated[UserService, Depends()], 
-        username: str = Query('')
+        service: Annotated[UserService, Depends()],
+        page: int = Query(1), 
+        limit: int = Query(10),
+        username: str = Query(''),
+        id: int = Query(None),
     ):
-    return service.get_users(username)
+    return service.get_users(page, limit, username, id)
 
 @router.get("/current", status_code=status.HTTP_200_OK, response_model=Response)
 def get_current_user(current_user: Annotated[str, Depends(oauth2_bearer_user)]):
@@ -32,7 +34,7 @@ def create_user(_: Annotated[str, Depends(oauth2_bearer_admin)], create_user_req
     service.create_user(create_user_request)
 
 @router.patch("/{id}", response_model=Response)
-def partial_update_user(_: Annotated[str, Depends(oauth2_bearer_user)], id: int, user: UserUpdate, service: Annotated[UserService, Depends()]):
+def partial_update_user(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, user: UserUpdate, service: Annotated[UserService, Depends()]):
     return service.partial_update_user(id=id, user=user)
 
 @router.patch("/change/password", status_code=status.HTTP_200_OK)

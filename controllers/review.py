@@ -24,14 +24,14 @@ def get_review_by_id(id: int, service: Annotated[ReviewService, Depends()]):
 
 @router.post("", response_model=Review)
 def create_review(
-    _: Annotated[str, Depends(oauth2_bearer_user)], 
+    current_user: Annotated[str, Depends(oauth2_bearer_user)], 
     review: ReviewCreate, 
     service: Annotated[ReviewService, Depends()]
 ):
-    return service.create_review(review=review)
+    return service.create_review(review=review, user_id=current_user.id)
 
 
 @router.delete("/{id}", response_model=DeleteResponse)
-def delete_review(_: Annotated[str, Depends(oauth2_bearer_user)], id: int, service: Annotated[ReviewService, Depends()]):
-    service.delete_review(id=id)
+def delete_review(current_user: Annotated[str, Depends(oauth2_bearer_user)], id: int, service: Annotated[ReviewService, Depends()]):
+    service.delete_review(id=id, current_user=current_user)
     return {"detail": "Review deleted successfully"}

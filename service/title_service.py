@@ -8,10 +8,14 @@ class TitleService:
     def __init__(self, repository: Annotated[TitleRepository, Depends()]):
         self.repository = repository
 
-    def get_titles(self, page: int, limit: int):
+    def get_titles(self, page: int, limit: int, name: str):
         skip = (page - 1) * limit
-        titles = self.repository.get_titles(skip=skip, limit=limit)
-        total = self.repository.get_title_count()
+        if name:
+            titles = self.repository.filter_titles_by_name(name=name, skip=skip, limit=limit)
+            total = self.repository.get_filtered_title_count(name=name)
+        else:
+            titles = self.repository.get_titles(skip=skip, limit=limit)
+            total = self.repository.get_title_count()
         return {
             "titles": titles,
             "total": total,

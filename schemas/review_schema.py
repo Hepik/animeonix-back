@@ -7,6 +7,7 @@ class ReviewBase(BaseModel):
     likes: int
     dislikes: int
     title_id: int
+    user_id: int
 
 class ReviewCreate(BaseModel):
     content: str
