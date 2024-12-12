@@ -51,25 +51,6 @@ class TitleRepository:
         self.db.refresh(db_title)
         return db_title
 
-    def update_title(self, id: int, title_data: schemas.title_schema.TitleCreate):
-        db_title = self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
-        if not db_title:
-            return None
-        
-        db_title.name = title_data.name
-        db_title.description = title_data.description
-        db_title.trailer = title_data.trailer
-        db_title.likes = title_data.likes
-        db_title.dislikes = title_data.dislikes
-        db_title.reviews = title_data.reviews
-        db_title.image = title_data.image
-        db_title.slug = title_data.slug
-
-        self.db.commit()
-        self.db.refresh(db_title)
-        return db_title
-
-
     def partial_update_title(self, id: int, title_data: schemas.title_schema.TitleUpdate):
         db_title = self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
         if not db_title:

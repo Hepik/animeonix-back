@@ -35,13 +35,6 @@ class TitleService:
         return db_title
 
 
-    def update_title(self, id: int, title: TitleCreate):
-        db_title = self.repository.update_title(id=id, title_data=title)
-        if db_title is None:
-            raise HTTPException(status_code=404, detail="Title not found")
-        return db_title
-
-
     def partial_update_title(self, id: int, title: TitleUpdate):
         db_title = self.repository.partial_update_title(id=id, title_data=title)
         if db_title is None:
