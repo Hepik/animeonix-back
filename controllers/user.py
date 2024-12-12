@@ -1,7 +1,8 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from starlette import status
 from service.user_service import UserService
+from service.file_service import FileService
 from schemas.user_schema import *
 from schemas.token_schema import *
 from utils.auth_utils import oauth2_bearer_user, oauth2_bearer_admin
@@ -50,3 +51,21 @@ def change_password(current_user: Annotated[str, Depends(oauth2_bearer_user)],
 def delete_user(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, service: Annotated[UserService, Depends()]):
     service.delete_user(id=id)
     return {"detail": "User deleted successfully"}
+
+@router.post("/change/avatar", status_code=200)
+def upload_avatar(
+    current_user: Annotated[str, Depends(oauth2_bearer_user)],
+    user_service: Annotated[UserService, Depends()],
+    file_service: Annotated[FileService, Depends()],
+    file: UploadFile = File(...),
+    
+):
+    try:
+        user = file_service.process_avatar(current_user.avatar, file)
+
+        user_service.partial_update_user(current_user.id, user)
+        
+        return {"detail": "Avatar updated successfully", "filename": user.avatar}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error uploading avatar: {str(e)}")
