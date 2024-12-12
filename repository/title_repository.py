@@ -11,22 +11,13 @@ class TitleRepository:
         self.db = session
 
     def get_titles(self, skip: int = 0, limit: int = 10):
-        titles = self.db.query(models.title.Title).offset(skip).limit(limit).all()
-        
-        for title in titles:
-            title.image = f"http://localhost:8000/images/{title.image.split('/')[-1]}"
-
-        return titles
+        return self.db.query(models.title.Title).offset(skip).limit(limit).all()
 
     def get_title_by_id(self, id: int):
-        title = self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
-        title.image = f"http://localhost:8000/images/{title.image.split('/')[-1]}"
-        return title
+        return self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
 
     def get_title_by_slug(self, slug: str):
-        title = self.db.query(models.title.Title).filter(models.title.Title.slug == slug).first()
-        title.image = f"http://localhost:8000/images/{title.image.split('/')[-1]}"
-        return title
+        return self.db.query(models.title.Title).filter(models.title.Title.slug == slug).first()
 
     def get_title_count(self):
         return self.db.query(models.title.Title).count()
@@ -52,7 +43,7 @@ class TitleRepository:
             name=title.name,
             description=title.description,
             trailer=title.trailer,
-            image=title.image.split('/')[-1],
+            image=title.image,
             slug=title.slug
         )
         self.db.add(db_title)
@@ -71,7 +62,7 @@ class TitleRepository:
         db_title.likes = title_data.likes
         db_title.dislikes = title_data.dislikes
         db_title.reviews = title_data.reviews
-        db_title.image = title_data.image.split('/')[-1]
+        db_title.image = title_data.image
         db_title.slug = title_data.slug
 
         self.db.commit()

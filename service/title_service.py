@@ -31,7 +31,7 @@ class TitleService:
 
 
     def create_title(self, title: TitleCreate):
-        db_title = self.repository.create_title(title=title)
+        db_title = self.repository.create_title(title)
         return db_title
 
 
