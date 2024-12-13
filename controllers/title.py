@@ -42,15 +42,13 @@ def delete_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, servi
 
 
 @router.post("/change/image", status_code=200)
-def upload_avatar(_: Annotated[str, Depends(oauth2_bearer_admin)],
+def upload_image(_: Annotated[str, Depends(oauth2_bearer_admin)],
                 file_service: Annotated[FileService, Depends()],
                 file: UploadFile = File(...),
                 old_image: str = Form(...),
                 ):
     try:
-        x = file_service.process_image(old_image, file)
-        print(x)
-        return x
+        return file_service.process_image(old_image, file)
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")
