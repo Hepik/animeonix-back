@@ -19,6 +19,6 @@ class Users(Base):
     hashed_password = Column(String, nullable=False)
     role = Column(Enum(RoleEnum), nullable=False, default=RoleEnum.user)
     isActive = Column(Boolean, nullable=False, default=False)
-    avatar = Column(String, default="user.jpg")
+    avatar = Column(String, default="/static/default_user_avatar.jpg")
 
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")

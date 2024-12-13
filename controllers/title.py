@@ -1,8 +1,9 @@
-from fastapi import Depends, HTTPException, Query, APIRouter
+from fastapi import Depends, HTTPException, Query, APIRouter, UploadFile, File, Form
 from typing import Annotated
 from starlette import status
 from schemas.title_schema import *
 from service.title_service import TitleService
+from service.file_service import FileService
 from utils.auth_utils import oauth2_bearer_admin
 
 
@@ -29,11 +30,6 @@ def create_title(_: Annotated[str, Depends(oauth2_bearer_admin)], title: TitleCr
     return service.create_title(title=title)
 
 
-@router.put("/{id}", response_model=Title)
-def update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, title: TitleCreate, service: Annotated[TitleService, Depends()]):
-    return service.update_title(id=id, title=title)
-
-
 @router.patch("/{id}", response_model=Title)
 def partial_update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, title: TitleUpdate, service: Annotated[TitleService, Depends()]):
     return service.partial_update_title(id=id, title=title)
@@ -43,3 +39,16 @@ def partial_update_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: in
 def delete_title(_: Annotated[str, Depends(oauth2_bearer_admin)], id: int, service: Annotated[TitleService, Depends()]):
     service.delete_title(id=id)
     return {"detail": "Title deleted successfully"}
+
+
+@router.post("/change/image", status_code=200)
+def upload_image(_: Annotated[str, Depends(oauth2_bearer_admin)],
+                file_service: Annotated[FileService, Depends()],
+                file: UploadFile = File(...),
+                old_image: str = Form(...),
+                ):
+    try:
+        return file_service.process_image(old_image, file)
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")

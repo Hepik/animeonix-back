@@ -17,25 +17,24 @@ class UserRepository:
         return self.db.query(models.user.Users).count()
     
     def filter_users_by_username(self, username: str, skip: int = 0, limit: int = 10):
-        return (
+        users = (
             self.db.query(models.user.Users)
             .filter(models.user.Users.username.ilike(f"%{username}%"))
             .offset(skip)
             .limit(limit)
             .all()
-        )
+        )        
+        return users
 
     def get_filtered_count(self, username: str) -> int:
         return self.db.query(models.user.Users).filter(models.user.Users.username.ilike(f"%{username}%")).count()
     
     def get_user_by_username(self, username: str):
         user = self.db.query(models.user.Users).filter(models.user.Users.username == username).first()
-        user.avatar = f"http://localhost:8000/images/{user.avatar.split('/')[-1]}"
         return user
     
     def get_user_by_id(self, id: int):
         user = self.db.query(models.user.Users).filter(models.user.Users.id == id).first()
-        user.avatar = f"http://localhost:8000/images/{user.avatar.split('/')[-1]}"
         return user
 
     def create_user(self, user_data: dict):
@@ -60,10 +59,7 @@ class UserRepository:
             return None
 
         for field, value in user_data.items():
-            if field == "avatar" and isinstance(value, str):
-                setattr(db_user, field, value.split('/')[-1])
-            else:
-                setattr(db_user, field, value)
+            setattr(db_user, field, value)
         self.db.commit()
         self.db.refresh(db_user)
         

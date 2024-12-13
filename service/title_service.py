@@ -31,14 +31,7 @@ class TitleService:
 
 
     def create_title(self, title: TitleCreate):
-        db_title = self.repository.create_title(title=title)
-        return db_title
-
-
-    def update_title(self, id: int, title: TitleCreate):
-        db_title = self.repository.update_title(id=id, title_data=title)
-        if db_title is None:
-            raise HTTPException(status_code=404, detail="Title not found")
+        db_title = self.repository.create_title(title)
         return db_title
 
 
