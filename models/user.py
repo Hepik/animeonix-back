@@ -22,3 +22,4 @@ class Users(Base):
     avatar = Column(String, default="/static/default_user_avatar.jpg")
 
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
+    reaction = relationship("Reaction", back_populates="user", cascade="all, delete-orphan")
