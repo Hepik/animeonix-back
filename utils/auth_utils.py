@@ -1,7 +1,7 @@
 from fastapi.security import OAuth2PasswordBearer
 from service.user_service import UserService
 from typing import Annotated
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Header
 from starlette import status
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
@@ -19,3 +19,12 @@ def oauth2_bearer_user(token: Annotated[str, Depends(oauth2_bearer)], service: A
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied. Authentication required.")
     
     return user
+
+def oauth2_bearer_user_optional(service: Annotated[UserService, Depends()], authorization: Annotated[str | None, Header()] = None):
+    if not authorization:
+        return None
+    try:
+        token = authorization.split(" ")[1] if " " in authorization else authorization
+        return service.get_current_user(token)
+    except:
+        return None

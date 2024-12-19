@@ -36,3 +36,9 @@ class ReactionRepository:
         self.db.commit()
         self.db.refresh(new_reaction)
         return new_reaction
+
+    def get_reaction_by_title_ids(self, title_ids: list[int]):
+        return self.db.query(models.reaction.Reaction).where(models.reaction.Reaction.title_id.in_(title_ids))
+    
+    def get_reaction_by_review_ids(self, review_ids: list[int]):
+        return self.db.query(models.reaction.Reaction).where(models.reaction.Reaction.review_id.in_(review_ids))
