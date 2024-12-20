@@ -10,10 +10,9 @@ class Review(Base):
 
     id = Column(Integer, primary_key=True)
     content = Column(String)
-    likes = Column(Integer, default=0)
-    dislikes = Column(Integer, default=0)
     title_id = Column(Integer, ForeignKey("titles.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
 
     title = relationship("Title", back_populates="review_list")
     user = relationship("Users", back_populates="reviews")
+    reaction = relationship("Reaction", back_populates="review", cascade="all, delete-orphan")

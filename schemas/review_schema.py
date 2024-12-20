@@ -4,8 +4,6 @@ from pydantic import BaseModel
 
 class ReviewBase(BaseModel):
     content: str
-    likes: int
-    dislikes: int
     title_id: int
     user_id: int
 

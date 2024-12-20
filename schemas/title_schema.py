@@ -6,8 +6,6 @@ class TitleBase(BaseModel):
     name: str
     description: str
     trailer: str
-    likes: int
-    dislikes: int
     reviews: int
     image: str
     slug: str
@@ -38,8 +36,6 @@ class TitleUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     trailer: Optional[str] = None
-    likes: Optional[int] = None
-    dislikes: Optional[int] = None
     reviews: Optional[int] = None
     image: Optional[str] = None
     slug: Optional[str] = None

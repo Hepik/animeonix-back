@@ -27,9 +27,7 @@ class ReviewRepository:
 
     def create_review(self, review: schemas.review_schema.ReviewCreate, user_id: int):
         db_review = models.review.Review(
-            content=review.content, 
-            likes=0, 
-            dislikes=0, 
+            content=review.content,
             title_id=review.title_id,
             user_id=user_id
         )
