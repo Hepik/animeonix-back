@@ -3,9 +3,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from starlette import status
 from service.user_service import UserService
 from service.file_service import FileService
+from service.email_service import EmailService
 from schemas.user_schema import *
 from schemas.token_schema import *
 from utils.auth_utils import oauth2_bearer_user, oauth2_bearer_admin
+from datetime import timedelta
+import models.user
 
 router = APIRouter(
     prefix="/users"
@@ -27,8 +30,22 @@ def get_current_user(current_user: Annotated[str, Depends(oauth2_bearer_user)]):
     return current_user
 
 @router.post("/register", status_code=status.HTTP_200_OK)
-def register_user(register_user_request: RegisterUserRequest, service: Annotated[UserService, Depends()]):
-    service.register_user(register_user_request)
+def register_user(register_user_request: RegisterUserRequest,
+                  service: Annotated[UserService, Depends()],
+                  email_service: Annotated[EmailService, Depends()],):
+    new_user = service.register_user(register_user_request)
+    try:
+        activation_token = email_service.create_user_activation_token(new_user.id, timedelta(days=256*365))
+        email_service.send_email(activation_token,
+                                recipient_email = register_user_request.email,
+                                recipient_username = register_user_request.username)
+    except:
+        service.delete_user(new_user.id)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not send an email.")
+
+@router.post("/account/activation", status_code=status.HTTP_200_OK)
+def activation_token_verification(email_service: Annotated[EmailService, Depends()], activation_token: str = Query('')):
+    return email_service.check_activation_token(activation_token)
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_user(_: Annotated[str, Depends(oauth2_bearer_admin)], create_user_request: CreateUserRequest, service: Annotated[UserService, Depends()]):

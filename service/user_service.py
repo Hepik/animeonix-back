@@ -40,7 +40,7 @@ class UserService:
         user_data = user_schema.model_dump(exclude_unset=True)
         user_data["hashed_password"] = UserService.get_password_hash(user_data["password"])
         user_data["isActive"] = False
-        self.repository.create_user(user_data)
+        return self.repository.create_user(user_data)
 
     def create_user(self, user_schema: CreateUserRequest):
         user_data = user_schema.model_dump(exclude_unset=True)

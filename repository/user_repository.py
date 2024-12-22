@@ -47,6 +47,9 @@ class UserRepository:
 
         self.db.add(create_user_model)
         self.db.commit()
+        self.db.refresh(create_user_model)
+
+        return create_user_model
 
     def update_user(self, db_user: models.user.Users):
         self.db.commit()
@@ -76,6 +79,13 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(db_user)
         return db_user
+
+
+    def activate_user_profile(self, user_id: int):
+        db_user = self.db.query(models.user.Users).filter(models.user.Users.id == user_id).first()
+        db_user.isActive = True
+        self.db.commit()
+        self.db.refresh(db_user)
 
 
     def delete_by_id(self, id: int):
