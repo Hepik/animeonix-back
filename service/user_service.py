@@ -40,7 +40,7 @@ class UserService:
         user_data = user_schema.model_dump(exclude_unset=True)
         user_data["hashed_password"] = UserService.get_password_hash(user_data["password"])
         user_data["isActive"] = False
-        self.repository.create_user(user_data)
+        return self.repository.create_user(user_data)
 
     def create_user(self, user_schema: CreateUserRequest):
         user_data = user_schema.model_dump(exclude_unset=True)
@@ -71,6 +71,9 @@ class UserService:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is not valid.")
         id: int = payload.get('id')
         return self.repository.get_user_by_id(id)
+    
+    def get_user_by_email(self, email: str):
+        return self.repository.get_user_by_email(email)
 
     def change_password(self, current_user, current_password: str, new_password: str):
         if not bcrypt.checkpw(current_password.encode('utf-8'), current_user.hashed_password.encode('utf-8')):
@@ -80,6 +83,9 @@ class UserService:
 
         self.repository.update_user(current_user)
 
+    def reset_password(self, new_password: str, user_id: int):
+        hashed_password = UserService.get_password_hash(new_password)
+        self.repository.reset_password(hashed_password, user_id)
     
     def partial_update_user(self, id: int, user: UserUpdate):
         user_data = user.model_dump(exclude_unset=True)
