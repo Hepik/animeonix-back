@@ -47,6 +47,34 @@ def register_user(register_user_request: RegisterUserRequest,
 def activation_token_verification(email_service: Annotated[EmailService, Depends()], activation_token: str = Query('')):
     return email_service.check_activation_token(activation_token)
 
+@router.post("/reset/password/email")
+def send_email_reset_password(email_service: Annotated[EmailService, Depends()],
+                              service: Annotated[UserService, Depends()],
+                              email: str = Query('')):
+    try:
+        user = service.get_user_by_email(email)
+        reset_password_token = email_service.create_password_reset_token(user.id, timedelta(hours=2))
+        email_service.send_reset_password_email(reset_password_token,
+                                                recipient_email = user.email,
+                                                recipient_username = user.username)
+    except:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not send an email.")
+
+@router.post("/reset/password/token/verification", status_code=status.HTTP_200_OK)
+def reset_password_token_verification(email_service: Annotated[EmailService, Depends()], reset_password_token: str = Query('')):
+    return email_service.check_reset_password_token(reset_password_token)
+
+@router.post("/reset/password", status_code=status.HTTP_200_OK)
+def reset_password(email_service: Annotated[EmailService, Depends()],
+                   service: Annotated[UserService, Depends()],
+                   data: ResetPasswordRequest):
+    try:
+        user_id = email_service.check_reset_password_token(data.reset_password_token)
+        service.reset_password(data.new_password, user_id)
+        return {"detail": "password changed successfully"}
+    except UserService.UserServiceException as error:
+        raise HTTPException(status_code=500, detail=f'{error}')
+
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_user(_: Annotated[str, Depends(oauth2_bearer_admin)], create_user_request: CreateUserRequest, service: Annotated[UserService, Depends()]):
     service.create_user(create_user_request)

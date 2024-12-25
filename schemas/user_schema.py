@@ -59,5 +59,9 @@ class PasswordChangeRequest(BaseModel):
     current_password: str
     new_password: str
 
+class ResetPasswordRequest(BaseModel):
+    new_password: str
+    reset_password_token: str
+
 class DeleteResponse(BaseModel):
     detail: str
