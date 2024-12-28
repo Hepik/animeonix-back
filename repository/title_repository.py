@@ -3,6 +3,8 @@ import schemas.title_schema
 from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
+import models.review
 from config.database import get_db
 
 
@@ -11,7 +13,25 @@ class TitleRepository:
         self.db = session
 
     def get_titles(self, skip: int = 0, limit: int = 10):
-        return self.db.query(models.title.Title).offset(skip).limit(limit).all()
+        query = (
+            self.db.query(
+                models.title.Title,
+                func.count(models.review.Review.id).label("reviews_count")
+            )
+            .outerjoin(models.review.Review, models.review.Review.title_id == models.title.Title.id)
+            .group_by(models.title.Title.id)
+            .offset(skip)
+            .limit(limit)
+        )
+
+        results = query.all()
+
+        titles_with_reviews = []
+        for title, reviews_count in results:
+            title.reviews = reviews_count
+            titles_with_reviews.append(title)
+
+        return titles_with_reviews
 
     def get_title_by_id(self, id: int):
         return self.db.query(models.title.Title).filter(models.title.Title.id == id).first()
