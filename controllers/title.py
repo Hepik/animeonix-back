@@ -47,8 +47,4 @@ def upload_image(_: Annotated[str, Depends(oauth2_bearer_admin)],
                 file: UploadFile = File(...),
                 old_image: str = Form(...),
                 ):
-    try:
-        return file_service.process_image(old_image, file)
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")
+    return file_service.process_image(old_image, file)
