@@ -1,0 +1,7 @@
+__pycache__
+qwe.txt
+*.db
+.env
+.venv
+.vscode
+.coverage
