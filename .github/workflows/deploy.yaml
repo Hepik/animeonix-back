@@ -1,5 +1,8 @@
 name: Deploy to Server
 
+env:
+  MIN_COVERAGE_REQUIRED: 75
+
 on:
   push:
     branches:
