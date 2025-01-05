@@ -1,0 +1,33 @@
+name: Run Python tests
+
+on: [push]
+
+env:
+  MIN_COVERAGE_REQUIRED: 75
+
+jobs:
+  python-test-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies and setup environments
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          cp default.env .env
+
+      - name: Run tests with coverage
+        run: coverage run -m pytest
+
+      - name: Check total coverage
+        id: total-coverage
+        run: |
+          coverage report --format total | python -c 'import sys; current_coverage = int(sys.stdin.read()); is_covered = current_coverage >= '$MIN_COVERAGE_REQUIRED'; print("Coverage is: ", current_coverage); sys.exit(not is_covered)'

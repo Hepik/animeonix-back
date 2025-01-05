@@ -4,3 +4,4 @@ qwe.txt
 .env
 .venv
 .vscode
+.coverage

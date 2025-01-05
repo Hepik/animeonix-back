@@ -43,11 +43,11 @@ class ReviewService:
 
     def delete_review(self, id: int, current_user: str):
         review = self.repository.get_review_by_id(id=id)
+        if not review:
+            raise HTTPException(status_code=404, detail="Review not found")
         if (review.user_id == current_user.id or current_user.role.value == 'admin'):
-            review_deleted = self.repository.delete_review(id=id)
+            self.repository.delete_review(id=id)
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied. Admin role required.")
         
-        if not review_deleted:
-            raise HTTPException(status_code=404, detail="Review not found")
         return {"detail": "Review deleted successfully"}

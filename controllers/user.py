@@ -105,12 +105,9 @@ def upload_avatar(
     file: UploadFile = File(...),
     
 ):
-    try:
-        user = file_service.process_avatar(current_user.avatar, file)
+    user = file_service.process_avatar(current_user.avatar, file)
 
-        user_service.partial_update_user(current_user.id, user)
-        
-        return {"detail": "Avatar updated successfully", "filename": user.avatar}
+    user_service.partial_update_user(current_user.id, user)
     
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error uploading avatar: {str(e)}")
+    return {"detail": "Avatar updated successfully", "filename": user.avatar}
+    
