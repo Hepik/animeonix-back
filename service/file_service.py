@@ -9,14 +9,16 @@ import os
 import uuid
 
 load_dotenv()
-STATIC_DIR = Path(os.environ["STATIC_DIR"])
-STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
-TITLES_DIR = STATIC_DIR / "titles"
-TITLES_DIR.mkdir(parents=True, exist_ok=True)
+if "PYTEST_CURRENT_TEST" not in os.environ:
+    STATIC_DIR = Path(os.environ["STATIC_DIR"])
+    STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
-AVATARS_DIR = STATIC_DIR / "avatars"
-AVATARS_DIR.mkdir(parents=True, exist_ok=True)
+    TITLES_DIR = STATIC_DIR / "titles"
+    TITLES_DIR.mkdir(parents=True, exist_ok=True)
+
+    AVATARS_DIR = STATIC_DIR / "avatars"
+    AVATARS_DIR.mkdir(parents=True, exist_ok=True)
 
 class FileService:
     def process_avatar(self, avatar: str, file: UploadFile = File(...)):
