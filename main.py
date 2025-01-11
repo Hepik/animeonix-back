@@ -9,8 +9,6 @@ import os
 load_dotenv()
 PORT = int(os.environ["PORT"])
 
-create_tables()
-
 app = FastAPI()
 
 app.add_middleware(
@@ -28,4 +26,5 @@ app.include_router(user.router)
 app.include_router(reaction.router)
 
 if __name__ == "__main__":
+    create_tables()
     uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)
