@@ -8,13 +8,13 @@ import os
 
 load_dotenv()
 PORT = int(os.environ["PORT"])
-CORS_ALLOWED_ORIGIN = os.environ["CORS_ALLOWED_ORIGIN"]
+FRONTEND_URL = os.environ["FRONTEND_URL"]
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[CORS_ALLOWED_ORIGIN],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
