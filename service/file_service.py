@@ -42,8 +42,10 @@ class FileService:
             filename = f"{file_hash}.{extension}"
 
             if avatar != f'{BACKEND_URL}/static/default_user_avatar.jpg':
-                old_path = STATIC_DIR.parent / avatar.lstrip('/')
-                old_path.unlink()
+                relative_path = avatar.replace(f"{BACKEND_URL}/static/", "")
+                old_path = STATIC_DIR / relative_path
+                if old_path.exists():
+                    old_path.unlink()
 
             file_path = AVATARS_DIR / filename
             image.save(file_path)
