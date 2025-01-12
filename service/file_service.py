@@ -11,7 +11,10 @@ import uuid
 load_dotenv()
 
 if "PYTEST_CURRENT_TEST" not in os.environ:
-    STATIC_DIR = Path(os.environ["STATIC_DIR"])
+    PUBLIC_DIR = Path(os.environ["PUBLIC_DIR"])
+    PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
+
+    STATIC_DIR = PUBLIC_DIR / "static"
     STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
     TITLES_DIR = STATIC_DIR / "titles"
