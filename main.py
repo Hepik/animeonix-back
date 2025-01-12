@@ -1,3 +1,4 @@
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,6 +10,7 @@ import os
 load_dotenv()
 PORT = int(os.environ["PORT"])
 FRONTEND_URL = os.environ["FRONTEND_URL"]
+STATIC_DIR = os.environ["STATIC_DIR"]
 
 app = FastAPI()
 
@@ -19,6 +21,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 app.include_router(title.router)
 app.include_router(review.router)

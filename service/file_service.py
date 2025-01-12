@@ -9,12 +9,10 @@ import os
 import uuid
 
 load_dotenv()
+BACKEND_URL = os.environ["BACKEND_URL"]
 
 if "PYTEST_CURRENT_TEST" not in os.environ:
-    PUBLIC_DIR = Path(os.environ["PUBLIC_DIR"])
-    PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
-
-    STATIC_DIR = PUBLIC_DIR / "static"
+    STATIC_DIR = Path(os.environ["STATIC_DIR"])
     STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
     TITLES_DIR = STATIC_DIR / "titles"
@@ -43,7 +41,7 @@ class FileService:
             extension = "jpg" if file.content_type == "image/jpeg" else "png"
             filename = f"{file_hash}.{extension}"
 
-            if avatar != '/static/default_user_avatar.jpg':
+            if avatar != f'{BACKEND_URL}/static/default_user_avatar.jpg':
                 old_path = STATIC_DIR.parent / avatar.lstrip('/')
                 old_path.unlink()
 
@@ -52,8 +50,9 @@ class FileService:
             file.file.close()
 
             file_path = '/' + file_path.relative_to(STATIC_DIR.parent).as_posix()
+            avatar_url = BACKEND_URL + file_path
 
-            user = UserUpdate(avatar=file_path)
+            user = UserUpdate(avatar=avatar_url)
 
             return user
         except HTTPException as e:
@@ -88,8 +87,9 @@ class FileService:
             file.file.close()
 
             file_path = '/' + file_path.relative_to(STATIC_DIR.parent).as_posix()
+            image_url = BACKEND_URL + file_path
 
-            return file_path
+            return image_url
         
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")
