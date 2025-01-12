@@ -49,6 +49,7 @@ class FileService:
 
             file_path = AVATARS_DIR / filename
             image.save(file_path)
+            file.file.close()
 
             file_path = '/' + file_path.relative_to(STATIC_DIR.parent).as_posix()
 
@@ -84,6 +85,7 @@ class FileService:
 
             file_path = TITLES_DIR / filename
             image.save(file_path)
+            file.file.close()
 
             file_path = '/' + file_path.relative_to(STATIC_DIR.parent).as_posix()
 
