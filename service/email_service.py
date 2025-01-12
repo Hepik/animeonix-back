@@ -19,6 +19,7 @@ SMTP_SERVER = os.environ["SMTP_SERVER"]
 SMTP_PORT = int(os.environ["SMTP_PORT"])
 SENDER_EMAIL = os.environ["SENDER_EMAIL"]
 SENDER_PASSWORD = os.environ["SENDER_PASSWORD"]
+FRONTEND_URL = os.environ["FRONTEND_URL"]
 
 class EmailService:
     def __init__(self, repository: Annotated[UserRepository, Depends()]):
@@ -49,7 +50,7 @@ class EmailService:
 
         Thank you for signing up for AnimeOnix. Please click the link below to activate your account:
 
-        http://localhost:3000/login?activation_token={activation_token}
+        {FRONTEND_URL}/login?activation_token={activation_token}
 
         If you did not sign up for this account, please ignore this email.
 
@@ -77,7 +78,7 @@ class EmailService:
 
         We received a request to reset the password for your account on AnimeOnix. If this was you, please click the link below to reset your password:
 
-        http://localhost:3000/login/reset-password?reset_password_token={reset_password_token}
+        {FRONTEND_URL}/login/reset-password?reset_password_token={reset_password_token}
 
         If you did not make this request, please ignore this email—your password will remain unchanged.
 
