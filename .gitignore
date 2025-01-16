@@ -5,3 +5,5 @@ qwe.txt
 .venv
 .vscode
 .coverage
+*.jpg
+*.png

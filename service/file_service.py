@@ -63,7 +63,7 @@ class FileService:
             raise HTTPException(status_code=500, detail=f"Error uploading avatar: {str(e)}")
     
 
-    def process_image(self, old_image: str, file: UploadFile = File(...)):
+    def process_image(self, old_image_url: str, file: UploadFile = File(...)):
         try:
             if file.content_type not in ["image/jpeg", "image/png"]:
                 raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG and PNG are allowed.")
@@ -80,8 +80,9 @@ class FileService:
             extension = "jpg" if file.content_type == "image/jpeg" else "png"
             filename = f"{file_hash}.{extension}"
 
-            if old_image != "":
-                old_path = STATIC_DIR.parent / old_image.lstrip('/')
+            if old_image_url != "":
+                old_image_url = old_image_url[len(BACKEND_URL):]
+                old_path = STATIC_DIR.parent / old_image_url.lstrip('/')
                 old_path.unlink()
 
             file_path = TITLES_DIR / filename
