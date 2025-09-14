@@ -35,10 +35,10 @@ cd animeonix-back
 
 ### Environment Variables
 
-Copy the default `.default.env` file and update the values as needed:
+Copy the default `default.env` file and update the values as needed:
 
 ```bash
-cp .default.env .env
+cp default.env .env
 ```
 
 #### Example `.env` file:
